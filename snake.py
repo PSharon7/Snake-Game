@@ -4,35 +4,38 @@
 """
 # -----------
 
-import Tkinter as tk
+from Tkinter import *
 import random
 
 class SnakeGame():
     def __init__(self):
         self.block = 15
 
-        self.score = 0
+        self.score = -10
 
-        r = random.randrange(201, 350, self.block)
+        r = random.randrange(191, 191+15*10, self.block)
         self.snakeX = [r, r+self.block, r+self.block*2]
         self.snakeY = [r, r, r]
 
         self.snakeDirection = 'left'
         self.snakeMove = [-1, 0]
 
-        window = tk.Tk()
+        window = Tk()
         window.geometry()
         window.maxsize(600,400)
         window.minsize(600,400)
         window.title("Snake Game")
 
-        self.frame1 = tk.Frame(window, bg = "white", relief = GROOVE, borderwidth = 5)
-        self.frame2 = tk.Frame(window, bg = "white", relief = RAISED, borderwidth = 2, height = 40, width = 600)
-        self.canvas = tk.Canvas(self.frame1, bg = 'gray', width = 600, height = 360)
-        self.score_label = tk.Label(self.frame2, text = "Score: 0")
+        # self.frame1 = tk.Frame(window, bg = "white", relief = GROOVE, borderwidth = 5)
+        # self.frame2 = tk.Frame(window, bg = "white", relief = RAISED, borderwidth = 2, height = 40, width = 600)
+
+        self.frame1 = Frame(window, bg = "white", relief = GROOVE, borderwidth = 5)
+        self.frame2 = Frame(window, bg = "white", relief = RAISED, borderwidth = 2, height = 40, width = 600)
+        self.canvas = Canvas(self.frame1, bg = 'gray', width = 600, height = 360)
+        self.score_label = Label(self.frame2, text = "Score: 0")
         
         self.frame1.pack()
-        self.frame2.pack(fill = BOTH)
+        self.frame2.pack(fill=BOTH)
         self.score_label.pack(side = LEFT)
         self.canvas.pack(fill = BOTH)
          
@@ -53,7 +56,7 @@ class SnakeGame():
         self.canvas.create_line(582, 8, 582, 363, fill = 'blue', width = 5)
         
     def draw_score(self):
-        self.score()
+        self.gamescore()
         self.score_label.config(self.score_label, text = "Score: " + str(self.score))
         
     def draw_food(self):
@@ -79,7 +82,7 @@ class SnakeGame():
         self.snakeY[0] += self.snakeMove[1]*self.block
         return(self.snakeX,self.snakeY)
         
-    def score(self):
+    def gamescore(self):
         self.score += 10
         
     
@@ -101,16 +104,16 @@ class SnakeGame():
             return False
     
     def move(self, event):
-        if event.char == '<Right>' and self.snakeDirection != 'left':
+        if event.char == 'l' and self.snakeDirection != 'left':
             self.snakeMove = [1,0]
             self.snakeDirection = "right"
-        elif event.char == '<Up>' and self.snakeDirection != 'down':
+        elif event.char == 'i' and self.snakeDirection != 'down':
             self.snakeMove = [0,-1]
             self.snakeDirection = "up"
-        elif event.char == '<Left>' and self.snakeDirection != 'right':
+        elif event.char == 'j' and self.snakeDirection != 'right':
             self.snakeMove = [-1,0]
             self.snakeDirection = "left"
-        elif event.char == '<Down>' and self.snakeDirection != 'up':
+        elif event.char == 'k' and self.snakeDirection != 'up':
             self.snakeMove = [0,1]
             self.snakeDirection = "down"
         else:
@@ -125,8 +128,8 @@ class SnakeGame():
                 self.gameover()
                 break
             elif self.iseated():
-                self.snakeX[0] += self.snakeMove[0]*self.step
-                self.snakeY[0] += self.snakeMove[1]*self.step   
+                self.snakeX[0] += self.snakeMove[0]*self.block
+                self.snakeY[0] += self.snakeMove[1]*self.block   
                 self.snakeX.insert(1,self.foodx)
                 self.snakeY.insert(1,self.foody)
 
@@ -148,8 +151,8 @@ class SnakeGame():
         self.canvas.unbind('<Key>')
 
         # to initialize the snake in the range of (191,191,341,341)                
-        r=random.randrange(191,191+15*10,self.step)
-        self.snakeX=[r,r+self.step,r+self.step*2]
+        r=random.randrange(191,191+15*10,self.block)
+        self.snakeX=[r,r+self.block,r+self.block*2]
         self.snakeY=[r,r,r]
         
         # to initialize the moving direction
@@ -157,7 +160,7 @@ class SnakeGame():
         self.snakeMove = [-1,0]
         
         # reset the score to zero 
-        self.gamescore=-10 
+        self.score=-10 
         self.draw_score() 
         
         # to initialize the game (food and snake)
