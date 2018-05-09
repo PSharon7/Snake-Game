@@ -13,29 +13,32 @@ class SnakeGame():
 
         self.score = -10
 
-        r = random.randrange(191, 191+15*10, self.block)
+        # to initialize the snake in the range of (191,191,241,241) 
+        r = random.randrange(191, 241, self.block)
         self.snakeX = [r, r+self.block, r+self.block*2]
         self.snakeY = [r, r, r]
 
-        self.snakeDirection = 'left'
-        self.snakeMove = [-1, 0]
+        # to initialize the moving direction
+        self.direction = ['up', 'down', 'left', 'right']
+        self.drcMove = [[0, -1], [0, 1], [-1, 0], [1, 0]]
+
+        i = random.randrange(0, 4, 1)
+        self.snakeDirection = self.direction[i]
+        self.snakeMove = self.drcMove[i]
 
         window = Tk()
         window.geometry()
-        window.maxsize(600,400)
-        window.minsize(600,400)
+        window.maxsize(600, 400)
+        window.minsize(600, 400)
         window.title("Snake Game")
 
-        # self.frame1 = tk.Frame(window, bg = "white", relief = GROOVE, borderwidth = 5)
-        # self.frame2 = tk.Frame(window, bg = "white", relief = RAISED, borderwidth = 2, height = 40, width = 600)
-
         self.frame1 = Frame(window, bg = "white", relief = GROOVE, borderwidth = 5)
-        self.frame2 = Frame(window, bg = "white", relief = RAISED, borderwidth = 2, height = 40, width = 600)
+        self.frame2 = Frame(window, bg = "white", relief = RAISED, borderwidth = 2, width = 600, height = 40)
         self.canvas = Canvas(self.frame1, bg = 'gray', width = 600, height = 360)
         self.score_label = Label(self.frame2, text = "Score: 0")
         
         self.frame1.pack()
-        self.frame2.pack(fill=BOTH)
+        self.frame2.pack(fill = BOTH)
         self.score_label.pack(side = LEFT)
         self.canvas.pack(fill = BOTH)
          
@@ -52,8 +55,8 @@ class SnakeGame():
     def draw_wall(self):
         self.canvas.create_line(10, 10, 582, 10, fill = 'blue', width = 5)
         self.canvas.create_line(10, 359, 582, 359, fill = 'blue', width = 5)
-        self.canvas.create_line(10, 8, 10, 363, fill = 'blue', width = 5)
-        self.canvas.create_line(582, 8, 582, 363, fill = 'blue', width = 5)
+        self.canvas.create_line(10, 8, 10, 362, fill = 'blue', width = 5)
+        self.canvas.create_line(582, 8, 582, 362, fill = 'blue', width = 5)
         
     def draw_score(self):
         self.gamescore()
@@ -66,7 +69,7 @@ class SnakeGame():
 
     def draw_snake(self):
         self.canvas.delete("snake")
-        x,y=self.snake()
+        x,y = self.snake()
         for i in range(len(x)):
             self.canvas.create_rectangle(x[i], y[i], x[i]+self.block, y[i]+self.block, fill = 'orange', tags = 'snake')
 
@@ -94,10 +97,10 @@ class SnakeGame():
             return False
     
     def isdead(self):
-        if self.snakeX[0]<8 or self.snakeX[0] >580 or self.snakeY[0]<8 or self.snakeY[0]>350 :
+        if self.snakeX[0]<8 or self.snakeX[0]>580 or self.snakeY[0]<8 or self.snakeY[0]>350 :
             return True
         
-        for i in range(1,len(self.snakeX)):
+        for i in range(1, len(self.snakeX)):
             if self.snakeX[0]==self.snakeX[i] and self.snakeY[0]==self.snakeY[i] :
                 return True
         else:
@@ -120,7 +123,7 @@ class SnakeGame():
             print event.keycode
             
     def play(self):
-        self.canvas.bind('<Key>',self.move)
+        self.canvas.bind('<Key>', self.move)
         self.canvas.focus_set()
 
         while True:
@@ -136,6 +139,7 @@ class SnakeGame():
                 self.draw_score()
                 self.draw_food()
                 self.draw_snake()
+
             else:
                 self.draw_snake() 
                 self.canvas.after(200)
@@ -143,21 +147,22 @@ class SnakeGame():
         
     def gameover(self):
         self.canvas.unbind('<Key>')
-        self.canvas.bind("<Key>",self.restart)
+        self.canvas.bind("<Key>", self.restart)
         self.canvas.create_text(270,180,text="Game Over!\n Press any key to continue",font='Helvetica -30 bold',tags='text')
 
     def restart(self,event):
-        self.canvas.delete("food","snake","text")
+        self.canvas.delete("food", "snake", "text")
         self.canvas.unbind('<Key>')
 
         # to initialize the snake in the range of (191,191,341,341)                
-        r=random.randrange(191,191+15*10,self.block)
-        self.snakeX=[r,r+self.block,r+self.block*2]
-        self.snakeY=[r,r,r]
+        r = random.randrange(191, 241, self.block)
+        self.snakeX = [r, r+self.block, r+self.block*2]
+        self.snakeY = [r, r, r]
         
         # to initialize the moving direction
-        self.snakeDirection = 'left'  
-        self.snakeMove = [-1,0]
+        i = random.randrange(0, 4, 1)
+        self.snakeDirection = self.direction[i]
+        self.snakeMove = self.drcMove[i]
         
         # reset the score to zero 
         self.score=-10 
